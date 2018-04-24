@@ -7,7 +7,8 @@ target 'SimpleWeatherApp' do
 
   # Pods for SimpleWeatherApp
 
-pod 'AFNetworking'
+pod 'Alamofire'
+pod 'MBProgressHUD'
 
 
 end
