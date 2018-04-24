@@ -24,11 +24,30 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         table_view.delegate = self
         table_view.dataSource = self
         
+        table_view.register(WeatherCell.self, forCellReuseIdentifier: "WeatherCell")
+        
+        let refreshControl: UIRefreshControl = {
+            let refreshControl = UIRefreshControl()
+            refreshControl.addTarget(self, action:
+                #selector(ViewController.handleRefresh(_:)),
+                                     for: UIControlEvents.valueChanged)
+            refreshControl.tintColor = UIColor.red
+            
+            return refreshControl
+        }()
+        table_view.refreshControl = refreshControl
+        
         fetchWeather()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    @objc func handleRefresh(_ refreshControl: UIRefreshControl) {
+        
+        fetchWeather()
+        refreshControl.endRefreshing()
     }
     
 // MARK: Tableview methods
@@ -40,7 +59,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 1
+            if self.currentWeatherDic["time"] != nil {
+                return 1
+            }else{
+                return 0
+            }
         case 1:
             return hourDataArray.count
         default:
@@ -51,7 +74,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
         case 0:
-            return 120
+            return 118
         case 1:
             return 44
         default:
@@ -60,19 +83,23 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell:UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "WeatherCell") as UITableViewCell!
         
         if indexPath.section == 0 {
-            cell.textLabel?.text = "Current Weather"
+            
+            let cell:WeatherCell = tableView.dequeueReusableCell(withIdentifier: "WeatherCell") as! WeatherCell!
+            
+            cell.setCellValues(Title: String.init(format: "Today %ld", self.currentWeatherDic["time"] as! NSNumber),
+                               Summary: self.currentWeatherDic["summary"] as! String,
+                               Temperature: String.init(format: "Today %ld", self.currentWeatherDic["temperature"] as! NSNumber),
+                               WindSpeed: String.init(format: "Today %ld", self.currentWeatherDic["windSpeed"] as! NSNumber))
+            
+            return cell
+            
         }else{
-            
-            
-            
+            let cell:UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "WeatherHourCell") as UITableViewCell!
             cell.textLabel?.text = "Hourly \(indexPath.row)"
+            return cell
         }
-        
-        
-        return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -12,6 +12,7 @@
 		BC82FE0E208F3C1D0076D947 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC82FE0C208F3C1D0076D947 /* Main.storyboard */; };
 		BC82FE10208F3C1D0076D947 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC82FE0F208F3C1D0076D947 /* Assets.xcassets */; };
 		BC82FE13208F3C1D0076D947 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC82FE11208F3C1D0076D947 /* LaunchScreen.storyboard */; };
+		BC82FE24208FC8E80076D947 /* WeatherCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC82FE23208FC8E80076D947 /* WeatherCell.swift */; };
 		EEDE3661A6031DAB8D66CBDE /* Pods_SimpleWeatherApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 946FB575E2118A5AA9464926 /* Pods_SimpleWeatherApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -25,6 +26,7 @@
 		BC82FE0F208F3C1D0076D947 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BC82FE12208F3C1D0076D947 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BC82FE14208F3C1D0076D947 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BC82FE23208FC8E80076D947 /* WeatherCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCell.swift; sourceTree = "<group>"; };
 		CCF1907310E6B5152E7D1403 /* Pods-SimpleWeatherApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleWeatherApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimpleWeatherApp/Pods-SimpleWeatherApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -114,10 +116,19 @@
 		BC82FE1D208F3D4B0076D947 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				BC82FE21208FC7320076D947 /* Cells */,
 				BC82FE0C208F3C1D0076D947 /* Main.storyboard */,
 				BC82FE11208F3C1D0076D947 /* LaunchScreen.storyboard */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		BC82FE21208FC7320076D947 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				BC82FE23208FC8E80076D947 /* WeatherCell.swift */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -253,6 +264,7 @@
 			files = (
 				BC82FE0B208F3C1D0076D947 /* ViewController.swift in Sources */,
 				BC82FE09208F3C1D0076D947 /* AppDelegate.swift in Sources */,
+				BC82FE24208FC8E80076D947 /* WeatherCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
