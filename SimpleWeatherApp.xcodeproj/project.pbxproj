@@ -12,9 +12,12 @@
 		BC82FE0E208F3C1D0076D947 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC82FE0C208F3C1D0076D947 /* Main.storyboard */; };
 		BC82FE10208F3C1D0076D947 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC82FE0F208F3C1D0076D947 /* Assets.xcassets */; };
 		BC82FE13208F3C1D0076D947 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC82FE11208F3C1D0076D947 /* LaunchScreen.storyboard */; };
+		EEDE3661A6031DAB8D66CBDE /* Pods_SimpleWeatherApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 946FB575E2118A5AA9464926 /* Pods_SimpleWeatherApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8B1B362412434D4C2EC5235B /* Pods-SimpleWeatherApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleWeatherApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SimpleWeatherApp/Pods-SimpleWeatherApp.debug.xcconfig"; sourceTree = "<group>"; };
+		946FB575E2118A5AA9464926 /* Pods_SimpleWeatherApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimpleWeatherApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC82FE05208F3C1D0076D947 /* SimpleWeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleWeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC82FE08208F3C1D0076D947 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BC82FE0A208F3C1D0076D947 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +25,7 @@
 		BC82FE0F208F3C1D0076D947 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BC82FE12208F3C1D0076D947 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BC82FE14208F3C1D0076D947 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CCF1907310E6B5152E7D1403 /* Pods-SimpleWeatherApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleWeatherApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-SimpleWeatherApp/Pods-SimpleWeatherApp.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,17 +33,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EEDE3661A6031DAB8D66CBDE /* Pods_SimpleWeatherApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0CFF8945FB6FB4FEED1DE6B9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				946FB575E2118A5AA9464926 /* Pods_SimpleWeatherApp.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		703D0318B84B5F2F1AEEE475 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				8B1B362412434D4C2EC5235B /* Pods-SimpleWeatherApp.debug.xcconfig */,
+				CCF1907310E6B5152E7D1403 /* Pods-SimpleWeatherApp.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		BC82FDFC208F3C1D0076D947 = {
 			isa = PBXGroup;
 			children = (
 				BC82FE07208F3C1D0076D947 /* SimpleWeatherApp */,
 				BC82FE06208F3C1D0076D947 /* Products */,
+				703D0318B84B5F2F1AEEE475 /* Pods */,
+				0CFF8945FB6FB4FEED1DE6B9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,14 +78,46 @@
 		BC82FE07208F3C1D0076D947 /* SimpleWeatherApp */ = {
 			isa = PBXGroup;
 			children = (
-				BC82FE08208F3C1D0076D947 /* AppDelegate.swift */,
-				BC82FE0A208F3C1D0076D947 /* ViewController.swift */,
-				BC82FE0C208F3C1D0076D947 /* Main.storyboard */,
-				BC82FE0F208F3C1D0076D947 /* Assets.xcassets */,
-				BC82FE11208F3C1D0076D947 /* LaunchScreen.storyboard */,
 				BC82FE14208F3C1D0076D947 /* Info.plist */,
+				BC82FE1B208F3D1F0076D947 /* Application */,
+				BC82FE1A208F3D000076D947 /* Controllers */,
+				BC82FE1D208F3D4B0076D947 /* Views */,
+				BC82FE1C208F3D370076D947 /* Resources */,
 			);
 			path = SimpleWeatherApp;
+			sourceTree = "<group>";
+		};
+		BC82FE1A208F3D000076D947 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				BC82FE0A208F3C1D0076D947 /* ViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		BC82FE1B208F3D1F0076D947 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				BC82FE08208F3C1D0076D947 /* AppDelegate.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		BC82FE1C208F3D370076D947 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BC82FE0F208F3C1D0076D947 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		BC82FE1D208F3D4B0076D947 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BC82FE0C208F3C1D0076D947 /* Main.storyboard */,
+				BC82FE11208F3C1D0076D947 /* LaunchScreen.storyboard */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +127,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = BC82FE17208F3C1D0076D947 /* Build configuration list for PBXNativeTarget "SimpleWeatherApp" */;
 			buildPhases = (
+				30E98A078D5B025D22FB975C /* [CP] Check Pods Manifest.lock */,
 				BC82FE01208F3C1D0076D947 /* Sources */,
 				BC82FE02208F3C1D0076D947 /* Frameworks */,
 				BC82FE03208F3C1D0076D947 /* Resources */,
+				6A5B4636DE668890B19FEF1B /* [CP] Embed Pods Frameworks */,
+				6F43D02F625F1B6A7003A43A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -130,6 +189,60 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		30E98A078D5B025D22FB975C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SimpleWeatherApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6A5B4636DE668890B19FEF1B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-SimpleWeatherApp/Pods-SimpleWeatherApp-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SimpleWeatherApp/Pods-SimpleWeatherApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6F43D02F625F1B6A7003A43A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SimpleWeatherApp/Pods-SimpleWeatherApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BC82FE01208F3C1D0076D947 /* Sources */ = {
@@ -272,6 +385,7 @@
 		};
 		BC82FE18208F3C1D0076D947 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8B1B362412434D4C2EC5235B /* Pods-SimpleWeatherApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -288,6 +402,7 @@
 		};
 		BC82FE19208F3C1D0076D947 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CCF1907310E6B5152E7D1403 /* Pods-SimpleWeatherApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
