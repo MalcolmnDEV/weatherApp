@@ -14,7 +14,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     var currentWeatherDic: Dictionary<String, AnyObject> = [:]
     var hourWeatherDic: Dictionary<String, AnyObject> = [:]
-    var hourDataArray: [Dictionary<String, AnyObject>] = []
+    var hourDataArray = NSArray()
     
     @IBOutlet var table_view: UITableView!
     
@@ -25,6 +25,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         table_view.dataSource = self
         
         table_view.register(WeatherCell.self, forCellReuseIdentifier: "WeatherCell")
+        table_view.register(WeatherHourCell.self, forCellReuseIdentifier: "WeatherHourCell")
         
         let refreshControl: UIRefreshControl = {
             let refreshControl = UIRefreshControl()
@@ -74,11 +75,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         switch indexPath.section {
         case 0:
-            return 118
+            return 178
         case 1:
-            return 44
+            return 46
         default:
-            return 44
+            return 46
         }
     }
     
@@ -88,16 +89,41 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             
             let cell:WeatherCell = tableView.dequeueReusableCell(withIdentifier: "WeatherCell") as! WeatherCell!
             
-            cell.setCellValues(Title: String.init(format: "Today %ld", self.currentWeatherDic["time"] as! NSNumber),
+            let time = NSDate(timeIntervalSince1970: TimeInterval(truncating: self.currentWeatherDic["time"] as! NSNumber))
+            let dateFormatter = DateFormatter()
+            
+            TimeZone.ReferenceType.default = TimeZone(abbreviation: "UTC")!
+            dateFormatter.timeZone = TimeZone.ReferenceType.default
+            dateFormatter.dateFormat = "EEEE, MMM d, yyyy"
+            let str = dateFormatter.string(from: time as Date)
+            
+            let temperature = UtilitiesHelper.sharedInstance.convertToCelius(Temperature: self.currentWeatherDic["temperature"] as! Float)
+            
+            cell.setCellValues(Title: String.init(format: "Today %@", str),
                                Summary: self.currentWeatherDic["summary"] as! String,
-                               Temperature: String.init(format: "Today %ld", self.currentWeatherDic["temperature"] as! NSNumber),
-                               WindSpeed: String.init(format: "Today %ld", self.currentWeatherDic["windSpeed"] as! NSNumber))
+                               Temperature: String.init(format: "Today %.0f°C", temperature),
+                               WindSpeed: String.init(format: "Today %.2f km/h", self.currentWeatherDic["windSpeed"] as! Float))
             
             return cell
             
         }else{
-            let cell:UITableViewCell = tableView.dequeueReusableCell(withIdentifier: "WeatherHourCell") as UITableViewCell!
-            cell.textLabel?.text = "Hourly \(indexPath.row)"
+            let cell:WeatherHourCell = tableView.dequeueReusableCell(withIdentifier: "WeatherHourCell") as! WeatherHourCell!
+            
+            let tempDic = self.hourDataArray[indexPath.row] as! Dictionary<String, AnyObject>
+
+            let time = NSDate(timeIntervalSince1970: TimeInterval(truncating: tempDic["time"] as! NSNumber))
+            let dateFormatter = DateFormatter()
+            
+            TimeZone.ReferenceType.default = TimeZone(abbreviation: "UTC")!
+            dateFormatter.timeZone = TimeZone.ReferenceType.default
+            dateFormatter.dateFormat = "hh:mm"
+            let str = dateFormatter.string(from: time as Date)
+            
+            let temperature = UtilitiesHelper.sharedInstance.convertToCelius(Temperature: tempDic["temperature"] as! Float)
+            
+            cell.setCellValues(Time: str,
+                               Temperature: String.init(format: "Today %.0f°C", temperature),
+                               WindSpeed: String.init(format: "Today %.2f km/h", self.currentWeatherDic["windSpeed"] as! Float))
             return cell
         }
     }
@@ -123,9 +149,6 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             hud.label.text = "Syncing"
            
             Alamofire.request("http://ec-weather-proxy.appspot.com/forecast/29e4a4ce0ec0068b03fe203fa81d457f/-33.9249,18.4241?delay=5&chaos=0.2", method:.get, encoding: JSONEncoding.init(options: [])).responseJSON { response in
-//                print("Request: \(String(describing: response.request))")   // original url request
-//                print("Response: \(String(describing: response.response))") // http url response
-//                print("Result: \(response.result)")                         // response serialization result
 
                 if let status = response.response?.statusCode {
                     MBProgressHUD.hide(for: self.view, animated: true)
@@ -137,7 +160,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                         
                         self.currentWeatherDic = (JSON.object(forKey: "currently") as? Dictionary<String,AnyObject>)!
                         self.hourWeatherDic = (JSON.object(forKey: "hourly") as? Dictionary<String,AnyObject>)!
-//                        self.hourDataArray = self.hourWeatherDic["data"]
+                        self.hourDataArray = self.hourWeatherDic["data"] as! NSArray
                         
                         self.table_view.reloadData()
                         
