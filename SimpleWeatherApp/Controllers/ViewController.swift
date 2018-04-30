@@ -21,9 +21,15 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // 900 is 15 min
+        Timer.scheduledTimer(timeInterval:900, target: self, selector: #selector(fetchWeather), userInfo: nil, repeats: true)
+        
+        currentWeatherDic = fetchCurrentWeather()
+        
         table_view.delegate = self
         table_view.dataSource = self
         
+        table_view.register(UITableViewCell.self, forCellReuseIdentifier: "NoWeatherCell")
         table_view.register(WeatherCell.self, forCellReuseIdentifier: "WeatherCell")
         table_view.register(WeatherHourCell.self, forCellReuseIdentifier: "WeatherHourCell")
         
@@ -60,11 +66,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            if self.currentWeatherDic["time"] != nil {
-                return 1
-            }else{
-                return 0
-            }
+            return 1
         case 1:
             return hourDataArray.count
         default:
@@ -87,25 +89,31 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         if indexPath.section == 0 {
             
-            let cell:WeatherCell = tableView.dequeueReusableCell(withIdentifier: "WeatherCell") as! WeatherCell!
-            
-            let time = NSDate(timeIntervalSince1970: TimeInterval(truncating: self.currentWeatherDic["time"] as! NSNumber))
-            let dateFormatter = DateFormatter()
-            
-            TimeZone.ReferenceType.default = TimeZone(abbreviation: "UTC")!
-            dateFormatter.timeZone = TimeZone.ReferenceType.default
-            dateFormatter.dateFormat = "EEEE, MMM d, yyyy"
-            let str = dateFormatter.string(from: time as Date)
-            
-            let temperature = UtilitiesHelper.sharedInstance.convertToCelius(Temperature: self.currentWeatherDic["temperature"] as! Float)
-            
-            cell.setCellValues(Title: String.init(format: "Today %@", str),
-                               Summary: self.currentWeatherDic["summary"] as! String,
-                               Temperature: String.init(format: "Today %.0f°C", temperature),
-                               WindSpeed: String.init(format: "Today %.2f km/h", self.currentWeatherDic["windSpeed"] as! Float))
-            
-            return cell
-            
+            if self.currentWeatherDic["time"] != nil {
+                let cell:WeatherCell = tableView.dequeueReusableCell(withIdentifier: "WeatherCell") as! WeatherCell!
+                
+                let time = NSDate(timeIntervalSince1970: TimeInterval(truncating: self.currentWeatherDic["time"] as! NSNumber))
+                let dateFormatter = DateFormatter()
+                
+                TimeZone.ReferenceType.default = TimeZone(abbreviation: "UTC")!
+                dateFormatter.timeZone = TimeZone.ReferenceType.default
+                dateFormatter.dateFormat = "EEEE, MMM d, yyyy"
+                let str = dateFormatter.string(from: time as Date)
+                
+                let temperature = UtilitiesHelper.sharedInstance.convertToCelius(Temperature: self.currentWeatherDic["temperature"] as! Float)
+                
+                cell.setCellValues(Title: String.init(format: "Today %@", str),
+                                   Summary: self.currentWeatherDic["summary"] as! String,
+                                   Temperature: String.init(format: "Today %.0f°C", temperature),
+                                   WindSpeed: String.init(format: "Today %.2f km/h", self.currentWeatherDic["windSpeed"] as! Float))
+                
+                return cell
+            }else{
+                let cell = tableView.dequeueReusableCell(withIdentifier: "NoWeatherCell", for: indexPath)
+                cell.textLabel?.text = "No weather, please pull down to refresh"
+                cell.textLabel?.textAlignment = .center
+                return cell
+            }
         }else{
             let cell:WeatherHourCell = tableView.dequeueReusableCell(withIdentifier: "WeatherHourCell") as! WeatherHourCell!
             
@@ -141,24 +149,25 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
-    func fetchWeather() {
+    @objc func fetchWeather() {
         
         if Connectivity.isConnectedToInternet {
             
-            let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
-            hud.label.text = "Syncing"
+//            let hud = MBProgressHUD.showAdded(to: self.view, animated: true)
+//            hud.label.text = "Syncing"
            
             Alamofire.request("http://ec-weather-proxy.appspot.com/forecast/29e4a4ce0ec0068b03fe203fa81d457f/-33.9249,18.4241?delay=5&chaos=0.2", method:.get, encoding: JSONEncoding.init(options: [])).responseJSON { response in
 
                 if let status = response.response?.statusCode {
-                    MBProgressHUD.hide(for: self.view, animated: true)
+//                    MBProgressHUD.hide(for: self.view, animated: true)
                     
                     switch(status){
                     case 200:
                         print("API success")
                         let JSON = response.result.value as! NSDictionary
                         
-                        self.currentWeatherDic = (JSON.object(forKey: "currently") as? Dictionary<String,AnyObject>)!
+                        saveCurrentWeather(dic: (JSON.object(forKey: "currently") as? Dictionary<String,AnyObject>)!)
+                        self.currentWeatherDic = fetchCurrentWeather()
                         self.hourWeatherDic = (JSON.object(forKey: "hourly") as? Dictionary<String,AnyObject>)!
                         self.hourDataArray = self.hourWeatherDic["data"] as! NSArray
                         
@@ -193,6 +202,22 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                 
             }}))
         self.present(alert, animated: true, completion: nil)
+    }
+}
+
+func saveCurrentWeather(dic:Dictionary<String, AnyObject>){
+    let data = NSKeyedArchiver.archivedData(withRootObject: dic)
+    UserDefaults.standard.set(data, forKey: "currentWeather")
+}
+
+func fetchCurrentWeather() -> Dictionary<String, AnyObject>{
+    
+    if let data = UserDefaults.standard.object(forKey: "currentWeather"){
+        return NSKeyedUnarchiver.unarchiveObject(with: data as! Data) as! Dictionary<String, AnyObject>
+    }else{
+        let temp: Dictionary<String, AnyObject> = [:]
+        return temp
+        
     }
 }
 
