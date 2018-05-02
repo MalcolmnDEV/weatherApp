@@ -9,8 +9,9 @@
 import UIKit
 import Alamofire
 import MBProgressHUD
+import UserNotifications
 
-class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UNUserNotificationCenterDelegate {
     
     var currentWeatherDic: Dictionary<String, AnyObject> = [:]
     var hourWeatherDic: Dictionary<String, AnyObject> = [:]
@@ -20,6 +21,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        UNUserNotificationCenter.current().delegate = self
         
         // 900 is 15 min
         Timer.scheduledTimer(timeInterval:900, target: self, selector: #selector(fetchWeather), userInfo: nil, repeats: true)
@@ -49,6 +52,10 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert])
     }
     
     @objc func handleRefresh(_ refreshControl: UIRefreshControl) {
@@ -166,6 +173,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
                         print("API success")
                         let JSON = response.result.value as! NSDictionary
                         
+                        self.checkTempertureChange(dic: (JSON.object(forKey: "currently") as? Dictionary<String,AnyObject>)!)
                         saveCurrentWeather(dic: (JSON.object(forKey: "currently") as? Dictionary<String,AnyObject>)!)
                         self.currentWeatherDic = fetchCurrentWeather()
                         self.hourWeatherDic = (JSON.object(forKey: "hourly") as? Dictionary<String,AnyObject>)!
@@ -203,7 +211,52 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             }}))
         self.present(alert, animated: true, completion: nil)
     }
+    
+    func checkTempertureChange(dic:Dictionary<String, AnyObject>){
+        
+        let oldTemperature = UtilitiesHelper.sharedInstance.convertToCelius(Temperature: self.currentWeatherDic["temperature"] as! Float)
+        let newTemperature = UtilitiesHelper.sharedInstance.convertToCelius(Temperature: dic["temperature"] as! Float)
+        
+        if oldTemperature < 15 || oldTemperature > 25{
+            //ignore
+        }else{
+            
+            if oldTemperature < newTemperature{
+                // Temperature went up
+                tempChangedNotification(sub: "Temperature went up", body: "Its getting hot")
+            }else if oldTemperature > newTemperature{
+                // Temp went down
+                tempChangedNotification(sub: "Temperature went down", body: "Its getting cold")
+            }else{
+                // nothing changed
+            }
+        }
+    }
+    
+    func tempChangedNotification(sub:String, body:String){
+        let notificationContent = UNMutableNotificationContent()
+        
+        // Configure Notification Content
+        notificationContent.title = "Temperature Changed"
+        notificationContent.subtitle = sub
+        notificationContent.body = body
+        
+        // Add Trigger
+        let notificationTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 10.0, repeats: false)
+        
+        // Create Notification Request
+        let notificationRequest = UNNotificationRequest(identifier: "weather_local_notification", content: notificationContent, trigger: notificationTrigger)
+        
+        // Add Request to User Notification Center
+        UNUserNotificationCenter.current().add(notificationRequest) { (error) in
+            if let error = error {
+                print("Unable to Add Notification Request (\(error), \(error.localizedDescription))")
+            }
+        }
+    }
 }
+
+// Globals
 
 func saveCurrentWeather(dic:Dictionary<String, AnyObject>){
     let data = NSKeyedArchiver.archivedData(withRootObject: dic)
